@@ -1,9 +1,12 @@
 const Board = require("../models/board");
+const List = require('../models/list')
+const Card = require('../models/card')
 const HttpError = require("../models/httpError");
 const { validationResult } = require("express-validator");
 
 const getBoards = (req, res, next) => {
-  Board.find({}, "title _id createdAt updatedAt").then((boards) => {
+  Board.find({}, "title _id createdAt updatedAt").
+  then((boards) => {
     res.json({
       boards,
     });
@@ -11,9 +14,19 @@ const getBoards = (req, res, next) => {
 };
 
 const getBoard = (req, res, next) => {
-  Board.findById(req.params.id).then((board) => {
-    res.json(board);
-  });
+  Board.findById(req.params.id, "-__v").populate("lists").populate({
+    path: 'lists',
+    populate: {
+      path: 'cards',
+      model: 'Card'
+    }
+  }).then((board) => {
+    if (!board) {
+      return next(new HttpError("No board found with this ID", 404))
+    } else {
+      res.json(board);
+    }
+  })
 }
 
 const createBoard = (req, res, next) => {

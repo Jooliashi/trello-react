@@ -10,10 +10,13 @@ const CardSchema = new Schema({
   labels: [{ type: String }],
   description: String,
   listId: {
-    type: ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "List",
   },
-  boardId: Number,
+  boardId: {
+    type: Schema.Types.ObjectId,
+    ref: "Board",
+  },
   position: Number,
   commentsCount: Number
 })
