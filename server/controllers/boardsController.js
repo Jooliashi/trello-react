@@ -10,6 +10,12 @@ const getBoards = (req, res, next) => {
   });
 };
 
+const getBoard = (req, res, next) => {
+  Board.findById(req.params.id).then((board) => {
+    res.json(board);
+  });
+}
+
 const createBoard = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -27,5 +33,6 @@ const createBoard = (req, res, next) => {
   }
 };
 
+exports.getBoard = getBoard;
 exports.getBoards = getBoards;
 exports.createBoard = createBoard;
